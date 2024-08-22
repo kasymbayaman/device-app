@@ -2,18 +2,22 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { BrandService } from './brand.service';
+import { BrandService, IBrandService } from './brand.service';
 import { IBrand } from './brand.interface';
 import { CreateBrandDto } from './dto/create-brand.dto';
 
 @Controller('brands')
 export class BrandController {
-  constructor(private readonly service: BrandService) {}
+  constructor(
+    @Inject(BrandService)
+    private readonly service: IBrandService,
+  ) {}
 
   @Get()
   getBrands() {

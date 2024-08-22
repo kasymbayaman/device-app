@@ -18,4 +18,22 @@
 4. Swagger documentation
 
 
-1. How to run tests
+## DB Design 
+
+```mermaid
+erDiagram
+    device {
+        uuid id
+        string name
+        datetime createdAt
+        string brand_id
+    }
+
+    device_brand {
+        uuid id
+        string name
+    }
+    
+    device_brand ||--o{ device : "has"
+```
+

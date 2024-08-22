@@ -32,7 +32,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: this.httpAdapter.getRequestUrl(ctx.getRequest()),
       message,
     };
-    
+
     this.httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }

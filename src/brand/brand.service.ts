@@ -5,8 +5,14 @@ import { BrandEntity } from './brand.entity';
 import { IBrand } from './brand.interface';
 import { CreateBrandDto } from './dto/create-brand.dto';
 
+export interface IBrandService {
+  findAll(): Promise<IBrand[]>;
+  findOne(options: FindOptionsWhere<BrandEntity>): Promise<IBrand | null>;
+  create(brand: CreateBrandDto): Promise<IBrand>;
+}
+
 @Injectable()
-export class BrandService {
+export class BrandService implements IBrandService {
   constructor(
     @InjectRepository(BrandEntity)
     private repository: Repository<BrandEntity>,

@@ -5,12 +5,20 @@ import { IDevice } from './device.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { CreateDeviceDto } from './dto/create-device.dto';
+import { DeviceRepository } from './device.repository';
+
+export interface IDeviceService {
+  create(device: CreateDeviceDto): Promise<IDevice>;
+  updateOne(id: string, device: UpdateDeviceDto): Promise<IDevice>;
+  findOne(options: FindOptionsWhere<DeviceEntity>): Promise<IDevice>;
+  deleteOne(id: string): Promise<void>;
+}
 
 @Injectable()
-export class DeviceService {
+export class DeviceService implements IDeviceService {
   constructor(
     @InjectRepository(DeviceEntity)
-    private readonly deviceRepository: Repository<DeviceEntity>,
+    private readonly deviceRepository: DeviceRepository,
   ) {}
 
   async create(device: CreateDeviceDto): Promise<IDevice> {
@@ -33,7 +41,7 @@ export class DeviceService {
       updatePayload['brandId'] = device.brandId;
     }
 
-    if (Object.keys(updatePayload).length > 0) {
+    if (Object.keys(updatePayload).length !== 0) {
       await this.deviceRepository.update(id, updatePayload);
     }
 
