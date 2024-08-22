@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { AbstractHttpAdapter } from '@nestjs/core';
 
@@ -19,13 +20,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    let message = (exception as Error).message;
+
+    if (exception instanceof BadRequestException) {
+      message = exception.getResponse()['message'];
+    }
+
     const responseBody = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: this.httpAdapter.getRequestUrl(ctx.getRequest()),
-      message: (exception as Error).message,
+      message,
     };
-
+    
     this.httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }

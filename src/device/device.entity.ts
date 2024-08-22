@@ -5,15 +5,15 @@ import { IBrand } from 'src/brand/brand.interface';
 import { BrandEntity } from 'src/brand/brand.entity';
 
 @Entity({ name: 'device' })
+@Index(['brandId', 'name'], { unique: true })
 export class DeviceEntity extends BaseEntity implements IDevice {
   @Index({ unique: true })
-  @Column({ type: 'uuid' })
+  @Column()
   name: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   brandId: string;
 
-  @ManyToOne(() => BrandEntity, (brand) => brand.devices)
+  @ManyToOne(() => BrandEntity, (brand) => brand.devices, { eager: true })
   brand: IBrand;
 }
