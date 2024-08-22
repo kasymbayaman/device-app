@@ -25,7 +25,7 @@ erDiagram
     device {
         uuid id
         string name
-        datetime createdAt
+        datetime created_at
         string brand_id
     }
 
@@ -35,5 +35,25 @@ erDiagram
     }
     
     device_brand ||--o{ device : "has"
+```
+
+## API
+
+### 1. Create a device brand
+
+```bash
+curl -X POST http://localhost:3000/brands -H "Content-Type: application/json" -d '{"name": "Apple"}'
+```
+
+### 2. Create a device
+
+```bash
+curl -X POST http://localhost:3000/devices -H "Content-Type: application/json" -d '{"name": "iPhone 12", "brand_id": "uuid from first request"}'
+```
+
+### 3. Get all devices
+
+```bash
+curl -X GET http://localhost:3000/devices
 ```
 

@@ -3,5 +3,5 @@ import { DeviceEntity } from './device.entity';
 
 export type DeviceRepository = Pick<
   Repository<DeviceEntity>,
-  'save' | 'update' | 'delete' | 'findOneBy'
+  'save' | 'update' | 'delete' | 'findOneBy' | 'find'
 >;

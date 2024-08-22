@@ -8,11 +8,13 @@ import {
   Param,
   NotFoundException,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DeviceService } from './device.service';
 import { IDevice } from './device.interface';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { CreateDeviceDto } from './dto/create-device.dto';
+import { QueryDevicesDto } from './dto/query-devices.dto';
 
 @Controller('devices')
 export class DeviceController {
@@ -50,5 +52,10 @@ export class DeviceController {
   @Delete(':id')
   deleteDevice(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.service.deleteOne(id);
+  }
+
+  @Get()
+  getDevices(@Query() query: QueryDevicesDto) {
+    return this.service.findMany(query);
   }
 }

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeviceService } from './device.service';
-import { DeviceRepository } from './device.repository';
+import { BrandService } from '../brand/brand.service';
 
 describe('DeviceService', () => {
   let service: DeviceService;
@@ -10,17 +10,24 @@ describe('DeviceService', () => {
     update: jest.fn(),
     delete: jest.fn(),
     findOneBy: jest.fn(),
+    find: jest.fn(),
+  };
+  const brandServiceMock = {
+    findOne: jest.fn(),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DeviceService,
-        // deviceRepositoryProvider,
         {
           provide: 'DeviceEntityRepository',
           useValue: repositoryMock,
         },
+        {
+          provide: BrandService,
+          useValue: brandServiceMock,
+        }
       ],
     }).compile();
 
@@ -100,5 +107,80 @@ describe('DeviceService', () => {
     await service.deleteOne('device-id');
 
     expect(repositoryMock.delete).toHaveBeenCalledWith('device-id');
+  });
+
+  it('should find many devices by name', async () => {
+    repositoryMock.find.mockResolvedValue([
+      {
+        id: 'device-id-1',
+        name: 'Test Device 1',
+        brand: {
+          id: 'brand-id',
+          name: 'Test Brand',
+        },
+      },
+    ]);
+
+    const devices = await service.findMany({
+      name: 'Test Device 1',
+      limit: 10,
+      offset: 20,
+    });
+
+    expect(brandServiceMock.findOne).toHaveBeenCalledTimes(0);
+    expect(devices).toHaveLength(1);
+    expect(devices[0].name).toBe('Test Device 1');
+    expect(repositoryMock.find).toHaveBeenCalledWith({
+      where: {
+        name: 'Test Device 1',
+      },
+      take: 10,
+      skip: 20,
+    });
+  });
+
+  it('should find many devices by brand name', async () => {
+    repositoryMock.find.mockResolvedValue([
+      {
+        id: 'device-id-1',
+        name: 'Test Device 1',
+        brand: {
+          id: 'brand-id',
+          name: 'Test Brand',
+        },
+      },
+      {
+        id: 'device-id-2',
+        name: 'Test Device 2',
+        brand: {
+          id: 'brand-id',
+          name: 'Test Brand',
+        },
+      },
+    ]);
+    brandServiceMock.findOne.mockResolvedValue({
+      id: 'brand-id',
+      name: 'Test Brand',
+    });
+
+    const devices = await service.findMany({
+      brandName: 'Test Brand',
+      limit: 10,
+      offset: 20,
+    });
+
+    expect(brandServiceMock.findOne).toHaveBeenCalledWith({
+      name: 'Test Brand',
+    });
+    expect(devices).toHaveLength(2);
+    expect(devices[0].name).toBe('Test Device 1');
+    expect(devices[1].name).toBe('Test Device 2');
+    expect(repositoryMock.find).toHaveBeenCalledWith({
+      where: {
+        brandId: 'brand-id',
+      },
+      take: 10,
+      skip: 20,
+    });
   });
 });
