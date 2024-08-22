@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: nestjs_app
+    container_name: device-app-service
     ports:
       - '3000:3000'
     environment:
@@ -17,7 +17,7 @@ services:
 
   db:
     image: postgres:15
-    container_name: postgres_db
+    container_name: device-app-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

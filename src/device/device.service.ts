@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 import { DeviceEntity } from './device.entity';
 import { IDevice } from './device.interface';
 import { InjectRepository } from '@nestjs/typeorm';
